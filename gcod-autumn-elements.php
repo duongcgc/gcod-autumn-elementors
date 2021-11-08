@@ -53,14 +53,14 @@ class GcoAutumnElements {
         if ($this->is_plugin_installed($elementor)) {
             $activation_url = wp_nonce_url('plugins.php?action=activate&amp;plugin=' . $elementor . '&amp;plugin_status=all&amp;paged=1&amp;s', 'activate-plugin_' . $elementor);
 
-            $message = sprintf(__('%1$sGCO Elements for Autumn%2$s requires %1$sElementor%2$s plugin to be active. Please activate Elementor to continue.', 'gco-autumn'), "<strong>", "</strong>");
+            $message = sprintf(__('%1$sGCO Elements for Autumn%2$s requires %1$sElementor%2$s plugin to be active. Please activate Elementor to continue.', 'essential-addons-for-elementor-lite'), "<strong>", "</strong>");
 
-            $button_text = __('Activate Elementor', 'gco-autumn');
+            $button_text = __('Activate Elementor', 'essential-addons-for-elementor-lite');
         } else {
             $activation_url = wp_nonce_url(self_admin_url('update.php?action=install-plugin&plugin=elementor'), 'install-plugin_elementor');
 
-            $message = sprintf(__('%1$sGCOD Elements for Autumn%2$s requires %1$sElementor%2$s plugin to be installed and activated. Please install Elementor to continue.', 'gco-autumn'), '<strong>', '</strong>');
-            $button_text = __('Install Elementor', 'gco-autumn');
+            $message = sprintf(__('%1$sGCOD Elements for Autumn%2$s requires %1$sElementor%2$s plugin to be installed and activated. Please install Elementor to continue.', 'essential-addons-for-elementor-lite'), '<strong>', '</strong>');
+            $button_text = __('Install Elementor', 'essential-addons-for-elementor-lite');
         }
 
         $button = '<p><a href="' . $activation_url . '" class="button-primary">' . $button_text . '</a></p>';
@@ -88,7 +88,7 @@ class GcoAutumnElements {
     public function gcod_load_style_elementor_assets() {
         wp_enqueue_style(
             'gcod-element-widgets',
-            GCOD_AUTUMN_THEME_URL . 'assets/css/style-elementor.css',
+            get_template_directory_uri() . '/assets/css/style-elementor.css',
             false,
             wp_get_theme()->get('Version')
         );
@@ -151,7 +151,7 @@ class GcoAutumnElements {
     }
 
     function gcocore_elementor_require_files() {
-        require_once GCOD_AUTUMN_ELEMENTS_COMPS_PATH . '/class-modules-theme.php';
+        require_once plugin_dir_path(__FILE__) . $this->gcod_components_dir . '/class-modules-theme.php';
     }
 
     // => Enqueue your custom style/script as your requirements elementor   
@@ -159,20 +159,53 @@ class GcoAutumnElements {
 
         wp_enqueue_style(
             'gcod-custom-elementor-styles',
-            GCOD_AUTUMN_THEME_URL . 'assets/css/gcod-elementor.css',
+            get_template_directory_uri() . '/assets/css/gcod-elementor.css',
             false,
             wp_get_theme()->get('Version')
         );
 
+        wp_enqueue_style(
+            'gcod-fontawesome-styles',
+             plugin_dir_url(__FILE__) . 'assets/vendors/fontawesome/css/all.fontawesome.min.css',
+            false,
+            wp_get_theme()->get('Version')
+        );
+
+        wp_enqueue_style(
+            'gcod-slick-styles',
+             plugin_dir_url(__FILE__) . 'assets/vendors/slick/slick.min.css',
+            false,
+            wp_get_theme()->get('Version')
+        );
         wp_register_script(
-            'gcod-custom-elementor-scripts',
-            GCOD_AUTUMN_THEME_URL . 'assets/js/gcod-elementor.js',
+            'gcod-slick-scripts',
+            plugin_dir_url(__FILE__) . 'assets/vendors/slick/slick.min.js',
             array('jquery'),
             true,
             wp_get_theme()->get('Version')
         );
+        wp_enqueue_script('gcod-slick-scripts');
 
-        wp_enqueue_script('gcod-custom-elementor-scripts');
+        
+        if ( \Elementor\Plugin::$instance->preview->is_preview_mode() ) {
+            wp_register_script(
+                'gcod-custom-elementor-scripts',
+                plugin_dir_url(__FILE__) . 'assets/js/gcod-elementor-editor.js',
+                array('jquery','gcod-slick-scripts'),
+                true,
+                wp_get_theme()->get('Version')
+            );
+            wp_enqueue_script('gcod-custom-elementor-scripts');
+        } else {
+            wp_register_script(
+                'gcod-custom-elementor-scripts',
+                plugin_dir_url(__FILE__) . 'assets/js/gcod-elementor.js',
+                array('jquery','gcod-slick-scripts'),
+                true,
+                wp_get_theme()->get('Version')
+            );
+            wp_enqueue_script('gcod-custom-elementor-scripts');
+        }
     }
 
     // Widget plug-in
@@ -190,7 +223,7 @@ class GcoAutumnElements {
         );
 
         // Include files from plugin core.
-        $gcod_widgets_dir = GCOD_AUTUMN_ELEMENTS_COMPS_PATH . '/widgets/';
+        $gcod_widgets_dir = plugin_dir_path(__FILE__) . '/widgets/';
         foreach ($gcod_widget_list as $file) {
             require_once $gcod_widgets_dir . $file;
         }
@@ -200,18 +233,18 @@ class GcoAutumnElements {
     function gcod_custom_widgets_assets() {
         wp_enqueue_style(
             'gcod-custom-widget-styles',
-            GCOD_AUTUMN_THEME_URL . 'assets/css/gcod-widgets.css',
+            get_template_directory_uri() . '/assets/css/gcod-widgets.css',
             false,
             wp_get_theme()->get('Version')
         );
 
-        wp_enqueue_script(
-            'gcod-custom-widget-scripts',
-            GCOD_AUTUMN_THEME_URL . 'assets/js/gcod-widgets.js',
-            array(),
-            true,
-            wp_get_theme()->get('Version')
-        );
+        // wp_enqueue_script(
+        //     'gcod-custom-widget-scripts',
+        //     get_template_directory_uri() . '/assets/js/gcod-widgets.js',
+        //     array('jquery', 'gcod-slick-scripts'),
+        //     true,
+        //     wp_get_theme()->get('Version')
+        // );
     }
 }
 
