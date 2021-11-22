@@ -7,11 +7,11 @@ if (!defined('ABSPATH')) exit; // Exit if accessed directly
       <h3 class="title">
          <?php if ($url_text) { ?>
             <a href="<?php echo $url_text; ?>" title="">
-         <?php } else { ?>
-            <span>
-         <?php } ?>
-            <?php echo $custom_text; ?>
-         <?php if ($url_text) { ?>
+            <?php } else { ?>
+               <span>
+               <?php } ?>
+               <?php echo $custom_text; ?>
+               <?php if ($url_text) { ?>
             </a>
          <?php } else { ?>
             </span>
