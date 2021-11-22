@@ -118,7 +118,7 @@
         ]
     });
     
-    $(".slidershow-slider").slick({
+    $(".featured-slider-1 .slidershow-slider").slick({
         loop: true,
         autoplay: false,
         autoplaySpeed: 3000,
@@ -171,4 +171,5 @@
             }
         ]
     });
+    
 })(jQuery);
